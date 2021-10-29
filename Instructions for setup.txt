@@ -1,0 +1,90 @@
+SETUP DATABASE =============================================================
+1. Open MySql
+2. Create a new query tab
+3. Copy and paste the following:
+
+CREATE DATABASE  IF NOT EXISTS `spgames`;
+USE `spgames`;
+DROP TABLE IF EXISTS `users`, `category`, `games`, `reviews`, `test`;
+
+CREATE TABLE users (
+id INT(1) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+username VARCHAR(50) NOT NULL,
+email VARCHAR(255) NOT NULL,
+password VARCHAR(50) NOT NULL,
+type VARCHAR(50) NOT NULL,
+profile_pic_url VARCHAR(255) NOT NULL,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+INSERT INTO users (`username`,`email`,`password`,`type`,`profile_pic_url`) VALUES ('Terry Tan','terry@gmail.com','123','Customer','https://www.abc.com/terry.jpg');
+INSERT INTO users (`username`,`email`,`password`,`type`,`profile_pic_url`) VALUES ('John Foo','foofoo@gmail.com','abc','Admin','https://www.abc.com/john.jpg');
+
+CREATE TABLE category (
+catid INT(1) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+catname VARCHAR(50) NOT NULL unique,
+description VARCHAR(255) NOT NULL,
+created_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
+INSERT INTO category (`catname`,`description`) VALUES ('Action','An action game emphasizes physical challenges, including hand–eye coordination and reaction-time');
+INSERT INTO category (`catname`,`description`) VALUES ('JRPG','Turn-based combat');
+INSERT INTO category (`catname`,`description`) VALUES ('Sports','Sports simulation games');
+INSERT INTO category (`catname`,`description`) VALUES ('Sandbox','Do anything you like with tools at your disposal!');
+INSERT INTO category (`catname`,`description`) VALUES ('Puzzle','Solve challenging puzzles!');
+
+CREATE TABLE games (
+gameid INT(1) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+title VARCHAR(50) NOT NULL,
+description VARCHAR(1000) NOT NULL,
+price DECIMAL(4,2) UNSIGNED NOT NULL,
+platform VARCHAR(50) NOT NULL,
+categoryid INT(1) UNSIGNED,
+    CONSTRAINT fk_catid
+    FOREIGN KEY (categoryid) 
+    REFERENCES category(catid)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+year INT(2) UNSIGNED,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+pic_url VARCHAR(255) DEFAULT null
+);
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Assassin’s Creed Valhalla','Assassin\'s Creed Valhalla is an action role-playing video game developed by Ubisoft Montreal and published by Ubisoft. It is the twelfth major installment and the twenty-second release in the Assassin\'s Creed series, and a successor to the 2018\'s Assassin\'s Creed Odyssey. Set in 873 AD, the game recounts a fictional story during the Viking invasion of Britain. The player controls Eivor, a Viking raider who becomes embroiled in the conflict between the Brotherhood of Assassins and the Templar Order.',69.90,'PC',1,2020,'http://localhost:8081/uploads/1612594419863gix30ttllzv41.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Yakuza: Like a Dragon','Yakuza: Like a Dragon is a role-playing video game developed and published by Sega. For the first time in the Yakuza series, the focus shifts away from Tokyo and the game\'s fictional recreation of Kabukichō, called Kamurocho. Instead, most of the gameplay takes place in the Yokohama district of Isezaki Ijincho, which is based on Yokohama\'s real-life Isezakichō district. However, Kamurocho and the Osaka district Sotenbori (another area from previous Yakuza games that\'s based on the real-life Dōtonbori district) will be featured in the game.',69.90,'PC',2,2020,'http://localhost:8081/uploads/1612594523092apps.38127.14427542363794747.182f58ca-3a24-4a65-93bd-cdd320a35776.aa29ae9b-d910-4213-984c-6e3c5dd828f3.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Pokemon Sword','Pokemon Sword and Shield are 2019 role-playing video games developed by Game Freak and published by The Pokémon Company and Nintendo for the Nintendo Switch.',79.90,'Switch',2,2019,'http://localhost:8081/uploads/1612594496510pokemon-sword-switch-cover.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Pokemon Shield','Pokemon Sword and Shield are 2019 role-playing video games developed by Game Freak and published by The Pokémon Company and Nintendo for the Nintendo Switch.',79.90,'Switch',2,2019,'http://localhost:8081/uploads/1612594488685pokemon-shield-switch-cover.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Link\'s Awakening (Remake)','The Legend of Zelda: Link\'s Awakening is an action-adventure game with a top-down perspective. Its story is set on Koholint Island, where Link, the player character, is stranded after his ship is caught up in a storm. After being rescued by a girl named Marin, Link embarks on a quest to collect the eight instruments of the Sirens and awaken Koholint\'s legendary Wind Fish in order to escape the island.',79.90,'Switch',2,2019,'http://localhost:8081/uploads/1612594434487the-legend-of-zelda-links-awakening-switch-cover.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Monster Hunter: World','Monster Hunter: World is an action role-playing game played from a third-person perspective. Similar to previous games in the series, the player takes the role of a player-created character who travels to the \"New World\", an unpopulated landmass filled with monsters, to join the Research Commission that studies the land from their central command base of Astera. The Research Commission tasks the Hunter to hunt down and either kill or capture large monsters that roam outside Astera to both protect the Commission and to study the monsters there.The player\'s character does not have any intrinsic attributes, but instead these are determined by what equipment the character is equipped with. This includes a weapon, selected from the series\' fourteen archetypes (such as long sword, bow, or hammer),which then further defines the types of combat moves and abilities the player can use, and pieces of armor, which can lead to beneficial or detrimental combat skills if matched properly. \n',65.00,'PS4',1,2018,'http://localhost:8081/uploads/1612594457425monster-hunter-world-cover.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Grand Theft Auto V','Grand Theft Auto V features three playable protagonists: Michael, Trevor and Franklin.\n\nMichael is a retired professional bank robber, who after making a sweet deal with the FIB, returned to the life of crime. Trevor is the loose cannon in this story and is also a long time best friend of Michael\'s and a hothead psychopath as well. Last but certainly not least, we have Franklin, a young and grim repossession agent who has a large amount of experience behind the wheel, but no real experience with a crime until he meets Michael while he was trying to hustle. \n',50.00,'Xbox',1,2013,'http://localhost:8081/uploads/1612594426629d5kkmze-ba18b972-f29c-4579-8c8e-161051f794c5.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('NBA 2K21','The game itself plays similarly to previous installments in the series. The player mainly plays NBA games with real-life or customized players and teams; games follow the rules and objectives of NBA games. Several game modes are present and many settings can be customized. Up to six expansion teams can be created and used in both MyLeague and MyGM Modes, with the possibility of a 36-team league, and any team can be relocated and rebranded. For the second time in series, all 12 WNBA teams are available to play as. There are 67 classic teams available, with the 2018–19 Toronto Raptors, 2016–17 Golden State Warriors, and 2015–16 Cleveland Cavaliers being among them. ',79.99,'Xbox',3,2020,'http://localhost:8081/uploads/161259446297981WQYgL5DWL._AC_SL1500_.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Monster Hunter Rise','As with previous Monster Hunter titles, Monster Hunter Rise has the player take the role of a Hunter, tasked with slaying or trapping large monsters using a variety of weapons, tools, and environmental features to damage and weaken them while surviving their attacks. Successful completion of the offered quests provide loot, typically in the form of various monster parts from the monster, which are used to forge new armor and weapons that can be used to take on more powerful monsters, forming the series\' notable core loop. Several of the series\' monsters return along with a host of new monsters developed for Rise. All fourteen weapon types that have been present in both Monster Hunter Generations and World, which mix archetypes of swords, shields, staves, bows, and guns, will be present in Rise.',79.99,'Switch',1,2021,'http://localhost:8081/uploads/1612594451085Monster-Hunter-Rise-Cover-Art-US.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Persona 4 Golden','Set in 2011, the game starts with the protagonist (who is named by the player) being sent to the rural town of Inaba from the big city, since his parents are working abroad. He is living with his uncle Ryotaro Dojima and his younger cousin Nanako Dojima, and attends Yasogami High School, where he becomes friends with Chie Satonaka, Yukiko Amagi and Yosuke Hanamura. His uncle Dojima is a police detective, whose primary assistant is a man named Tohru Adachi.\n\nOn his first day arriving in town, the protagonist has a strange dream that teaches him to use a Persona, specifically his first one Izanagi, in battle. Through Chie, the protagonist and Yosuke come to realize that an urban legend called the Midnight Channel is true; if you stare into a turned off TV at midnight on a rainy day, you will see a strange figure in there. Shocking the once sleepy town, a TV announcer, Mayumi Yamano, is found dead, hanging upside-down from a telephone pole.',20.00,'PC',2,2008,'http://localhost:8081/uploads/1612594471521Persona_4_Golden_box.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Persona 5','Persona 5 is a fantasy based on reality which follows a group of troubled high school students: the protagonist and a collection of compatriots he meets along the way. These disturbed and troubled teenagers gradually realize that they are living in a toxic and dangerous world resembling a prison full of slavery, oppression and injustice, ruled by corrupted and twisted adults. They can\'t live with the system and can\'t live without it, and simply existing means they are at risk of being doomed and condemned to a life of slavery. ',59.99,'PS4',2,2017,'http://localhost:8081/uploads/161259447943581jGL42j4GL._SX425_.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Yakuza 0','In December 1988, during Japan\'s bubble period, Kazuma Kiryu, a yakuza, is suspected of murder in Kamurocho, Tokyo, after a man that he has collected money from winds up dead in the city\'s \"Empty Lot\", which is currently being fought over internally by Sohei Dojima\'s Dojima Family, a powerful branch of the greater yakuza family known as the Tojo Clan. The lot is a tiny patch of land that is essential for the \"Kamurocho Revitalisation Project\" worth multiple billion yen. Forced out of the family, Kiryu meets Tetsu Tachibana, a powerful real estate owner promising to help clear Kiryu\'s name, who was hired by his incarcerated foster father, Shintaro Kazama. ',28.00,'PC',1,2017,'http://localhost:8081/uploads/1612594501668T6WgqoF_350x200_1x-0.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Yakuza Kiwami','The plot is similar to the first Yakuza. Takes place seven years after the event of Yakuza 0, Kazuma Kiryu, now a Lieutenant Advisor of the Dojima Family of the Tojo Clan, wants to start his own subsidiary family.\nBut one night, one of the Dojima Family members, told Kiryu that the Dojima Family Patriarch, Sohei Dojima, kidnaps his childhood friend, Yumi Sawamura, and his oath brother, Akira Nishikiyama, already went off to chase them to the Dojima Family office\nAs soon as he got told, Kiryu rushes to the Dojima Family office and when he arrives, only to find out that Nishikiyama already took Dojima\'s life with a gun and Yumi is in shock because of the murder. ',28.00,'PC',1,2019,'http://localhost:8081/uploads/1612594507492dRNMo8HTxrGiKgV6uMEaNUVt3MEDHvmOLBDJ8ZMS0_Q_350x200_1x-0.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Yakuza Kiwami 2','Taking place a year after the first game (both Yakuza and Yakuza Kiwami), The Dragon of Dojima, as expected, finds himself in yet another precarious situation involving the schemes of the Tojo Clan.\n\nSince the passing of Akira Nishikiyama in the first installment, the Tojo Clan has been slowly falling apart, internal power struggles running riot. This inevitably leads to conflict with Osaka\'s Omi Alliance, which happens to be backing the late Nishikiyama. Kiryu must travel to Sotenbori, Osaka in an attempt to broker peace between the rival clans, but Ryuji Goda, known as the Dragon of Kansai, will stop at nothing to get his war. In this world, there can only be one dragon. ',41.00,'PC',1,2019,'http://localhost:8081/uploads/1612594515828675342-yakuza-kiwami-2-windows-apps-front-cover.jpg');
+INSERT INTO games (`title`,`description`,`price`,`platform`,`categoryid`,`year`,`pic_url`) VALUES ('Minecraft','In Minecraft, players explore a blocky, procedurally-generated 3D world with infinite terrain, and may discover and extract raw materials, craft tools and items, and build structures or earthworks. Depending on game mode, players can fight computer-controlled \"mobs\", as well as cooperate with or compete against other players in the same world. Game modes include a survival mode, in which players must acquire resources to build the world and maintain health, and a creative mode, where players have unlimited resources. Players can modify the game to create new gameplay mechanics, items, and assets. ',26.95,'PC',4,2011,'http://localhost:8081/uploads/1612594442042489736-minecraft-windows-apps-front-cover.jpg');
+
+CREATE TABLE reviews (
+reviewid INT(1) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+reviewerid INT UNSIGNED NOT NULL,
+    CONSTRAINT fk_userid
+    FOREIGN KEY (reviewerid) 
+    REFERENCES users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+gameid INT(1) UNSIGNED,
+	CONSTRAINT fk_gameid
+	FOREIGN KEY (gameid)
+    REFERENCES games(gameid)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+content VARCHAR(255) NOT NULL,
+rating INT(1) UNSIGNED NOT NULL,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+insert into reviews (reviewerid,gameid,content, rating) values (1,1,"Enjoyed the game! The story and gameplay was great!",5);
+insert into reviews (reviewerid,gameid,content, rating) values (1,2,"The new protagonist is great!",5);
+
+4. Run the query by clicking the lightning symbol
+
+SETUP SERVER===========================================================================
+1. To start the backend server, right click the folder "backend" in Visual Studio Code and click "Open in integrated terminal" and type nodemon
+2. To start the frontend server, right click the folder "frontend" in Visual Studio Code and click "Open in integrated terminal" and type nodemon

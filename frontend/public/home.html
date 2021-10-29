@@ -1,0 +1,206 @@
+<!-- Admission Number: P2021672
+Name: Koh Hui Lyn
+Class: 1B05 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Home</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- add a site logo -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script> //check if user is logged in, if yes then show Logout if not show Login
+      $(document).ready(function() {
+        if (localStorage.getItem("token")!==null){
+          $("#Login").append('<a class="nav-link" href="logout.html">LOGOUT</a>');
+          //if logged in, check if user is Customer or Admin
+          var userInfo = JSON.parse(localStorage.getItem("userInfo"));
+          var userType = userInfo[0].type
+          //if user is an Admin, will show option to add a game/category
+          if (userType=="Admin"){
+              var navHTML = `
+              <li class="nav-item">
+                  <a class="nav-link" href="addGame.html">ADD GAME</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="addCat.html">ADD CATEGORY</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="addPic.html">UPDATE GAME PICTURE</a>
+            </li>
+              `
+              $('#addNav').append(navHTML);
+          }
+        }
+        else {
+          $("#Login").append('<a class="nav-link" href="login.html">LOGIN</a>')
+        }
+        
+        });
+    </script>
+    <script>
+      //show all games
+      axios.get(`http://localhost:8081/games/`)
+      .then((response) => {
+          const games = response.data;
+          games.forEach((game) => {
+              const gameHtml = `
+              <div class="col-md-4">
+                <figure><a href="http://localhost:3001/gameDesc/${game.gameid}"><img id="gamePics" class="img-fluid" src="${game.pic_url}"></a></figure>
+                <figcaption><a href="http://localhost:3001/gameDesc/${game.gameid}">${game.title}</a></figcaption>
+              </div>
+              `;
+              $("#games").append(gameHtml);
+          });
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+    </script>
+
+  <script>
+    $(document).ready(function(){
+      //SEARCH===========================
+      $("#searchIcon").click(function (){
+        //when the Seach Icon is clicked
+        var searchfield=$("#searchInput").val();
+        var maxPrice=$("#maxpriceInput").val();
+        //Remove past possible search history
+        sessionStorage.removeItem("search")
+        sessionStorage.removeItem("maxPrice");
+        //Put new values into the search
+        sessionStorage.setItem("search",searchfield);
+        sessionStorage.setItem("maxPrice", maxPrice)
+        //go to Search.html after values r assigned
+        window.location.assign("http://localhost:3001/search.html");
+      })
+      //DROP DOWN========================
+      //if the Option next to the down arrow is clicked, will show other options
+      $(".default_option").click(function(){
+        $(".dropdown ul").addClass("active");
+      });
+      //If other options are selected will replace the one at the top
+      $(".dropdown ul li").click(function(){
+        var text = $(this).text();
+        $(".default_option").text(text);
+        $(".dropdown ul").removeClass("active");
+      });
+      //When the "Filter" button is clicked
+      $("#filterBtn").click(function(){
+        //Get the Platform in the default dropdown box option
+        var platform=$(".default_option").text();
+        //if the user chooses "All"
+        if (platform=="All"){
+          location.reload(); 
+        }
+        else{ //if the user chooses something other than "All"
+          axios.get(`http://localhost:8081/game/${platform}`)
+          .then((response) => {
+            document.getElementById("games").innerHTML = "";
+            const games = response.data;
+            games.forEach((game) => {
+              const gameHtml = `
+              <div class="col-md-4">
+                <figure><a href="http://localhost:3001/gameDesc/${game.gameid}"><img id="gamePics" class="img-fluid" src="${game.pic_url}"></a></figure>
+                <figcaption><a href="http://localhost:3001/gameDesc/${game.gameid}">${game.title}</a></figcaption>
+                </div>
+              `;
+              $("#games").append(gameHtml);
+            });
+          })
+          .catch((error) => {
+              console.log(error);
+          });
+        }
+      })
+    });
+  </script>
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="home.html">
+        <figure id="logo"><img src="./img/logo.jpeg" class="img-fluid rounded" alt=""></figure>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto" id="addNav">
+          <li class="nav-item active">
+            <a class="nav-link" href="home.html">HOME</a>
+          </li>
+          <li class="nav-item" id="Login">
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <div class="container">
+    <div class="row mx-auto" id="searchBar">
+      <!-- Search and maxprice -->
+      <div class="wrapper">
+        <div class="search_box">
+          <div>
+            <div class="search_field" id="maxPrice">
+              <input type="text" id="maxpriceInput" placeholder="Max Price">
+            </div>
+          </div>
+          <div class="search_field">
+            <input type="text" class="input" id="searchInput" placeholder="Search">
+            <i class="fas fa-search" id="searchIcon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Platform dropdown -->
+  <div class="container id=dropdownWrapper">
+    <div class="wrapper row mx-auto" id="searchBar">
+      <div class="search_box">
+        <div class="dropdown">
+          <div class="default_option">All</div>
+          <ul>
+            <li>All</li>
+            <li>PS4</li>
+            <li>PC</li>
+            <li>Switch</li>
+            <li>Xbox</li>
+          </ul>
+        </div>
+        <button id="filterBtn" class="btn btn-dark">Filter</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Shows all games -->
+  <div class="container">
+    <div class="row" id="games">
+    </div>
+
+  </div>
+
+
+  </div>
+</body>
+</html>

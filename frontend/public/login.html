@@ -1,0 +1,117 @@
+<!-- Admission Number: P2021672
+Name: Koh Hui Lyn
+Class: 1B05 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Login</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- add a site logo -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>\
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script>  
+      $(document).ready(function () {  
+          // #Login refer to the <input> -> id element
+          $("#Login").click(function () {  
+            // console.log("login clicked");
+            var id=$('#inputEmail').val();  // request the value(val) belongs to #email element
+            var pwd=$('#inputPassword').val();
+            var data = "{\"email\":\""+id+"\", \"password\":\""+pwd+"\"}";
+            $.ajax({                                                               
+              url: 'http://localhost:8081/api/login/' ,  
+              type: 'POST', 
+              data: data,
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",  
+              success: function (data, textStatus, xhr) { // data = {result: fsf.sds.dsd}
+                  if (data != null){                    
+                    localStorage.setItem('token',data.token);
+                    localStorage.setItem('userInfo',data.UserData);
+                    window.location.assign("http://localhost:3001/home.html");
+                  } 
+                  else {
+                    console.log("Error");
+                    window.location.assign("http://localhost:3001/login.html");
+                  }                                                                 
+                },  
+                error: function (xhr, textStatus, errorThrown) { 
+                  if (errorThrown==="Unauthorized"){
+                    console.log(xhr.responseText)
+                    alert("No such email/password!")
+                  }
+                  else {
+                    console.log('Error in Operation');  
+                  }
+                }  
+             });  
+            return false;
+          });  
+      });  
+    </script>  
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="margin-top:-25px">
+        <div class="container">
+            <a class="navbar-brand row" href="home.html">
+                <figure id="logo"><img src="./img/logo.jpeg" class="img-fluid rounded" alt=""></figure>
+            </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="home.html">HOME</a></li>
+                <li class="nav-item active"><a class="nav-link" href="login.html">LOGIN</a></li>
+            </ul>
+        </div>
+        </div>
+    </nav>
+  
+    <!-- Sign in -->
+    <div class="container" id="login">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+          <div class="card card-signin my-5">
+            <div class="card-body">
+              <h5 class="card-title text-center">Sign In</h5>
+              <form class="form-signin">
+                <div class="form-label-group">
+                  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                  <label for="inputEmail">Email address</label>
+                </div>
+  
+                <div class="form-label-group">
+                  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                  <label for="inputPassword">Password</label>
+                </div>
+  
+                <a href="signup.html">No account? Sign up now!</a>
+                <button class="btn btn-lg btn-primary btn-block text-uppercase" style="margin-top: 5px;"type="submit" id="Login">Sign in</button>
+                <hr class="my-4">
+                <button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i class="fab fa-google mr-2"></i> Sign in with Google</button>
+                <button class="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i class="fab fa-facebook-f mr-2"></i> Sign in with Facebook</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+  
+</html>
